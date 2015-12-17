@@ -7,23 +7,19 @@ class Hero(GameLogic):
     """docstring for Hero"""
 
     def __init__(self, **kwargs):
+        GameLogic.__init__(self, **kwargs)
         self.name = kwargs['name']
         self.title = kwargs['title']
-        self.maximum_health = kwargs['health']
-        self.maximum_mana = kwargs['mana']
-        self.health = kwargs['health']
-        self.mana = kwargs['mana']
-        self.mana_regeneration_rate = kwargs['mana_regeneration_rate']
         self.weapon = {'weapon': '', 'spell': ''}
 
     def __int__(self):
         return self.health
 
     def __add__(self, other):
-        pass
+        return self.health + self.take_healing(other)
 
     def __iadd__(self, other):
-        pass
+        return self.health - other.attack()
 
     def __eq__(self, other):
         pass
@@ -55,17 +51,25 @@ class Hero(GameLogic):
         pass
 
 
+class Enemy():
+
+    def __init__(self, health=100, mana=100, damage=20):
+        self.health = health
+        self.mana = mana
+        self.dmg = damage
 
 
 class Spell:
 
     """docstring for weapon"""
+    spells = {}
 
     def __init__(self, **kwargs):
         self.name = kwargs['name']
         self.damage = kwargs['damage']
         self.mana_cost = kwargs['mana_cost']
         self.cast_range = kwargs['cast_range']
+        self.spells[self.name] = self.damage
 
     def __str__(self):
         return "Default spell: {}".format(self.name)
@@ -89,10 +93,12 @@ class Spell:
 class Weapon:
 
     """docstring for Weapon"""
+    equipment = {}
 
     def __init__(self, name, dmg):
         self.name = name
-        self.damage = dmg
+        self.dmg = dmg
+        equipment[self.name] = self.dmg
 
     def __str__(self):
         return "Current chosen weapon is {}".format(self.name)
@@ -100,13 +106,24 @@ class Weapon:
     def __repr__(self):
         return "Current chosen weapon is {}".format(self.name)
 
+    def __int__(self):
+        return self.dmg
+
 
 class GameLogic:
 
     """docstring for GameLogic"""
 
-    def __init__(self):
-        pass
+    def __init__(health=100, mana=100, mana_regeneration_rate=2):
+        self.health = health
+        self.mana = mana
+        self.mana_regeneration_rate = mana_regeneration_rate
+        self.maximum_mana = mana
+        self.maximum_health = health
+        self.health = health
+        self.mana = mana
+        self.mana_regeneration_rate = mana_regeneration_rate
+        self.dmg = 0
 
     def is_alive(self):
         return True if self.health > 0 else False
@@ -140,3 +157,9 @@ class GameLogic:
         self.health -= dmg_points if self.health > dmg_points else 0
 
 
+
+
+class Treasure():
+
+    def __init__(self):
+        pass
