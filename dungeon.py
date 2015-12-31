@@ -141,25 +141,40 @@ class Dungeon:
     def next_level(self):
         return "Congrats you finish {} are you ready for {}".format()
 
-    def hero_attack(self, by):
+    def hero_attack(self, by="spell"):
         pass
 
 
-class Fight(Dungeon):
+class Fight(Dungeon, Spell, Weapon):
     """docstring for Fight"""
-    def __init__(self, arg):
-        super(Fight, self).__init__()
-        self.arg = arg
+    def __init__(self, *args, **kwargs):
+        super(Fight, self).__init__(*args, **kwargs)
+
+    def weapon_attack(self, weapon):
+        if weapon == 0:
+            return hero.dmg
+        return weapon.current_weapon()
+
+    def spell_attack(self, spell):
+        if spell.spells > 0:
+            return spell.current_position()
+        return self.weapon_attack()
+
+    def auto_fight(self):
+        if fight_distance <= 1:
+            return self.weapon_attack()
+        if fight_distance >= 1 and self.fight_distance() <= self.cast_range():
+            return self.spell_attack()
 
     #return range
-    def auto_fight(self):
+    def fight_distance(self):
         m = self.__map_read()
         h_pos = self.hero_pos
         vertical = "".join([x[h_pos[1]] for x in m])
-        if "E" or "T" in m[h_pos[0]]:
+        if "E" in m[h_pos[0]]:
             if "#" not in m[h_pos[0]][h_pos[1]: self.current_position('E')[1]]:
                 return len(m[h_pos[0]][h_pos[1]: self.current_position('E')[1]])
-        if "E" or "T" in vertical:
+        if "E" in vertical:
             if "#" not in vertical[h_pos[1]: self.current_position()[1]]:
                 return len(vertical[h_pos[1]: self.current_position()[1]])
         return False
